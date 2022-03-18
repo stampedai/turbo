@@ -49,12 +49,12 @@ export class Bardo {
   }
 
   get placeholders(): HTMLMetaElement[] {
-    return [ ...document.querySelectorAll("meta[name=turbo-permanent-placeholder][content]") ] as any
+    return [ ...document.querySelectorAll("div[name=turbo-permanent-placeholder][content]") ] as any
   }
 }
 
 function createPlaceholderForPermanentElement(permanentElement: Element) {
-  const element = document.createElement("meta")
+  const element = document.createElement("div")
   element.setAttribute("name", "turbo-permanent-placeholder")
   element.setAttribute("content", permanentElement.id)
   return element
