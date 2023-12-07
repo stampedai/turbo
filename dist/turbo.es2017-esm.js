@@ -1,5 +1,5 @@
 /*
-Turbo 7.3.0
+Turbo 7.3.1
 Copyright © 2023 37signals LLC
  */
 (function () {
@@ -358,7 +358,13 @@ function nextMicrotask() {
     return Promise.resolve();
 }
 function parseHTMLDocument(html = "") {
-    return new DOMParser().parseFromString(html, "text/html");
+    let parsedHTML = new DOMParser().parseFromString(html, "text/html");
+    parsedHTML.querySelectorAll("style").forEach((element) => {
+        var _a;
+        const cspNonce = ((_a = document.head.querySelector('meta[property=csp-nonce]')) === null || _a === void 0 ? void 0 : _a.content) || '';
+        element.nonce = cspNonce;
+    });
+    return parsedHTML;
 }
 function unindent(strings, ...values) {
     const lines = interpolate(strings, values).replace(/^\n/, "").split("\n");
