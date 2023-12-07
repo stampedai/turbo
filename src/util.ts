@@ -67,12 +67,7 @@ export function nextMicrotask() {
 }
 
 export function parseHTMLDocument(html = "") {
-  return new DOMParser().parseFromString(sanitizeHtml(html), "text/html")
-}
-
-function sanitizeHtml(html = "") {
-  const cspNonce = (document.head.querySelector('meta[property=csp-nonce]') as HTMLMetaElement)?.content;
-  return html.replace(/<style>/g, `<style nonce="${cspNonce}">`);
+  return new DOMParser().parseFromString(html, "text/html")
 }
 
 export function unindent(strings: TemplateStringsArray, ...values: any[]): string {

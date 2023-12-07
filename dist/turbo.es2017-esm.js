@@ -358,12 +358,7 @@ function nextMicrotask() {
     return Promise.resolve();
 }
 function parseHTMLDocument(html = "") {
-    return new DOMParser().parseFromString(sanitizeHtml(html), "text/html");
-}
-function sanitizeHtml(html = "") {
-    var _a;
-    const cspNonce = (_a = document.head.querySelector('meta[property=csp-nonce]')) === null || _a === void 0 ? void 0 : _a.content;
-    return html.replace(/<style>/g, `<style nonce="${cspNonce}">`);
+    return new DOMParser().parseFromString(html, "text/html");
 }
 function unindent(strings, ...values) {
     const lines = interpolate(strings, values).replace(/^\n/, "").split("\n");
