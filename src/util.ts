@@ -67,12 +67,12 @@ export function nextMicrotask() {
 }
 
 export function parseHTMLDocument(html = "") {
-  let parsedHTML: Document = new DOMParser().parseFromString(html, "text/html")
-  parsedHTML.querySelectorAll("style").forEach((element: HTMLElement) => {
-    const cspNonce = (document.head.querySelector('meta[property=csp-nonce]') as HTMLMetaElement)?.content || ''
-    element.nonce = cspNonce
-  })
-  return parsedHTML
+  return new DOMParser().parseFromString(sanitizeHtml(html), "text/html")
+}
+
+function sanitizeHtml(html = "") {
+  const cspNonce = (document.head.querySelector('meta[property=csp-nonce]') as HTMLMetaElement)?.content;
+  return html.replace(/<style>/g, `<style nonce="${cspNonce}">`);
 }
 
 export function unindent(strings: TemplateStringsArray, ...values: any[]): string {
