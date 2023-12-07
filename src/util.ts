@@ -67,7 +67,12 @@ export function nextMicrotask() {
 }
 
 export function parseHTMLDocument(html = "") {
-  return new DOMParser().parseFromString(html, "text/html")
+  let parsedHTML: Document = new DOMParser().parseFromString(html, "text/html")
+  parsedHTML.querySelectorAll("style").forEach((element: HTMLElement) => {
+    const cspNonce = (document.head.querySelector('meta[property=csp-nonce]') as HTMLMetaElement)?.content || ''
+    element.nonce = cspNonce
+  })
+  return parsedHTML
 }
 
 export function unindent(strings: TemplateStringsArray, ...values: any[]): string {
