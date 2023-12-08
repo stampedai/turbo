@@ -67,7 +67,24 @@ export function nextMicrotask() {
 }
 
 export function parseHTMLDocument(html = "") {
-  return new DOMParser().parseFromString(html, "text/html")
+  const styleMap: { [key: string]: string } = {};
+  html = html.replace(/<(\w+)([^>]*)style="([^"]*)"/g, (match, tag, otherAttrs, style) => {
+    const id = Math.random().toString(36).substr(2, 9); 
+    styleMap[id] = style;
+    return `<${tag}${otherAttrs}id="${id}"`;
+  });
+
+  const doc = new DOMParser().parseFromString(html, "text/html");
+
+  Object.keys(styleMap).forEach(id => {
+      const element = doc.getElementById(id);
+      if (element) {
+          element.style.cssText = styleMap[id];
+          element.removeAttribute("id");
+      }
+  });
+
+  return doc;
 }
 
 export function unindent(strings: TemplateStringsArray, ...values: any[]): string {
