@@ -66,22 +66,26 @@ export function nextMicrotask() {
   return Promise.resolve()
 }
 
-export function parseHTMLDocument(html = "") {
+export function parseHTMLDocument(html: string = ""): Document {
   const styleMap: { [key: string]: string } = {};
+
+  // Replace style attribute with data-style-attribute and ensure proper spacing
   html = html.replace(/<(\w+)([^>]*)style="([^"]*)"/g, (match, tag, otherAttrs, style) => {
-    const id = Math.random().toString(36).substr(2, 9); 
-    styleMap[id] = style;
-    return `<${tag}${otherAttrs}id="${id}"`;
+    const uniqueKey: string = Math.random().toString(36).substr(2, 9); 
+    styleMap[uniqueKey] = style;
+    // Ensure there is a space before data-style-attribute
+    return `<${tag}${otherAttrs} data-style-attribute="${uniqueKey}"`;
   });
 
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc: Document = new DOMParser().parseFromString(html, "text/html");
 
-  Object.keys(styleMap).forEach(id => {
-      const element = doc.getElementById(id);
-      if (element) {
-          element.style.cssText = styleMap[id];
-          element.removeAttribute("id");
-      }
+  // Apply styles and remove data-style-attribute
+  Object.keys(styleMap).forEach(uniqueKey => {
+    const elements = doc.querySelectorAll(`[data-style-attribute="${uniqueKey}"]`);
+    elements.forEach(element => {
+        (element as HTMLElement).style.cssText = styleMap[uniqueKey];
+        element.removeAttribute("data-style-attribute");
+    });
   });
 
   return doc;
