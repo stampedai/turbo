@@ -77,6 +77,12 @@ export function parseHTMLDocument(html: string = ""): Document {
     return `<${tag}${otherAttrs} data-style-attribute="${uniqueKey}"`;
   });
 
+  html = html.replace(/<style([^>]*)>/g, (match, otherAttrs) => {
+    const nonce = getMetaContent("csp-nonce");
+    otherAttrs = otherAttrs.replace(/nonce=""/g, "");
+    return nonce ? `<style${otherAttrs} nonce="${nonce}">` : match;
+});
+
   const doc: Document = new DOMParser().parseFromString(html, "text/html");
 
   // Apply styles and remove data-style-attribute
